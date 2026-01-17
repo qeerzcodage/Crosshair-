@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at top, #0d1b3d, #02040a);
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* NAVBAR */
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+    background: rgba(5,10,25,0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #00f6ff40;
+}
+
+nav h1 {
+    color: #00f6ff;
+    font-size: 26px;
+    letter-spacing: 2px;
+}
+
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #00f6ff;
+}
+
+/* HERO */
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px 8%;
+}
+
+.hero-text {
+    max-width: 520px;
+}
+
+.hero-text h2 {
+    font-size: 48px;
+    color: #00f6ff;
+}
+
+.hero-text p {
+    margin: 20px 0;
+    color: #cfd9ff;
+    font-size: 18px;
+}
+
+.download-btn {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 15px 35px;
+    background: linear-gradient(135deg, #00f6ff, #0066ff);
+    color: black;
+    font-weight: 900;
+    border-radius: 40px;
+    text-decoration: none;
+    box-shadow: 0 0 25px #00f6ff;
+    transition: 0.3s;
+}
+
+.download-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 45px #00f6ff;
+}
+
+.hero img {
+    max-width: 520px;
+    filter: drop-shadow(0 0 35px #00f6ff);
+}
+
+/* SECTIONS */
+
+.section {
+    padding: 70px 10%;
+}
+
+.section h2 {
+    text-align: center;
+    color: #00f6ff;
+    margin-bottom: 50px;
+    font-size: 36px;
+}
+
+.card {
+    background: rgba(10,15,35,0.75);
+    border: 1px solid #00f6ff40;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 20px #00f6ff20;
+}
+
+/* GALLERY */
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap: 25px;
+}
+
+.gallery img {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid #00f6ff40;
+    box-shadow: 0 0 20px #00f6ff40;
+    transition: 0.3s;
+}
+
+.gallery img:hover {
+    transform: scale(1.05);
+}
+
+/* ADS ZONE */
+
+.ads {
+    margin: 60px auto;
+    text-align: center;
+    border: 1px dashed #00f6ff;
+    padding: 30px;
+    color: #00f6ff;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #888;
+    font-size: 14px;
+    border-top: 1px solid #00f6ff30;
+}
