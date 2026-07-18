@@ -1,95 +1,1089 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GARAMYR — Montage PC sur-mesure</title>
+<meta name="description" content="GARAMYR monte ton PC sur-mesure selon ton budget et ton usage. Devis gratuit, contact direct par Discord ou WhatsApp.">
+<link rel="icon" id="favicon-link" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<style>
+  :root{
+    --bg:#07050C;
+    --panel:#0F0B1A;
+    --panel-2:#150F28;
+    --card:#150F28;
+    --border:rgba(255,255,255,0.09);
+    --text:#EDEBFF;
+    --text-dim:#8D86B8;
+    --accent:#FF2E9A;
+    --accent2:#00F0FF;
+    --accent3:#B026FF;
+    --danger:#FF3B5C;
+    --radius:12px;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1000px 500px at 12% -10%, rgba(0,240,255,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(255,46,154,0.12), transparent 60%),
+      radial-gradient(700px 600px at 50% 100%, rgba(176,38,255,0.08), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Rajdhani', sans-serif;
+    font-size:17px;
+    line-height:1.5;
+  }
+  h1,h2,h3{ font-family:'Orbitron', sans-serif; letter-spacing:.02em; margin:0; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  section{ padding:80px 24px; max-width:1120px; margin:0 auto; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent2); text-shadow:0 0 8px rgba(0,240,255,.5); margin-bottom:10px; display:block;
+  }
+  .section-title{ font-size:32px; color:#fff; margin-bottom:14px; }
+  .section-sub{ color:var(--text-dim); font-size:16px; max-width:560px; margin-bottom:40px; }
+  button, .btn{
+    font-family:'Rajdhani', sans-serif; font-weight:700; font-size:15px; letter-spacing:.02em;
+    cursor:pointer; border-radius:9px; border:1px solid var(--border); padding:13px 24px;
+    background:var(--panel-2); color:var(--text); transition:.15s; display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+  }
+  button:hover, .btn:hover{ border-color:var(--accent2); box-shadow:0 0 12px rgba(0,240,255,.35); color:var(--accent2); }
+  .btn-primary{
+    background:#0B0716; color:var(--accent2); border:1px solid var(--accent2);
+    box-shadow:0 0 14px rgba(0,240,255,.45), inset 0 0 8px rgba(0,240,255,.15);
+    text-shadow:0 0 6px rgba(0,240,255,.5);
+  }
+  .btn-primary:hover{ box-shadow:0 0 22px rgba(0,240,255,.8); color:#fff; }
+  .btn-copper{
+    background:#0B0716; color:var(--accent); border:1px solid var(--accent);
+    box-shadow:0 0 12px rgba(255,46,154,.4), inset 0 0 8px rgba(255,46,154,.15);
+    text-shadow:0 0 6px rgba(255,46,154,.5);
+  }
+  .btn-copper:hover{ box-shadow:0 0 20px rgba(255,46,154,.8); color:#fff; }
 
-    <title>Victory Crosshair — V9 Extreme</title>
+  /* header */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(7,5,12,0.72); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .mark{
+    width:36px;height:36px;border-radius:8px; background:#0B0716; border:1px solid var(--accent2);
+    display:flex;align-items:center;justify-content:center; font-family:'Orbitron',sans-serif;
+    font-size:12px; font-weight:700; color:var(--accent2);
+    box-shadow:0 0 8px rgba(0,240,255,.6), inset 0 0 8px rgba(0,240,255,.25);
+    text-shadow:0 0 6px var(--accent2);
+    overflow:hidden;
+  }
+  .mark img{ width:100%; height:100%; object-fit:cover; }
+  .brand span{ font-family:'Orbitron',sans-serif; font-size:16px; font-weight:700; color:#fff; }
+  nav{ display:flex; gap:6px; align-items:center; }
+  nav a{
+    font-size:14px; font-weight:600; padding:9px 14px; border-radius:8px; text-decoration:none;
+    color:var(--text-dim);
+  }
+  nav a:hover{ color:var(--accent2); }
+  nav a.cta{
+    background:rgba(0,240,255,.1); color:var(--accent2); border:1px solid var(--accent2);
+  }
+  #nav-toggle{ display:none; }
+  .burger{ display:none; background:none; border:1px solid var(--border); padding:9px 12px; }
 
-    <!-- SEO -->
-    <meta name="description" content="Victory Crosshair is a professional gaming software with RGB and animated crosshairs to dominate your games.">
+  /* hero */
+  .hero{ padding:100px 24px 70px; text-align:center; position:relative; }
+  .hero h1{ font-size:42px; color:#fff; line-height:1.15; max-width:760px; margin:0 auto 18px; }
+  .hero h1 .glow{ color:var(--accent2); text-shadow:0 0 14px rgba(0,240,255,.7), 0 0 32px rgba(0,240,255,.35); }
+  .hero p{ color:var(--text-dim); font-size:18px; max-width:520px; margin:0 auto 34px; }
+  .hero-ctas{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:44px; }
+  .trust-strip{ display:flex; gap:28px; justify-content:center; flex-wrap:wrap; color:var(--text-dim); font-size:14px; }
+  .trust-strip span{ display:flex; align-items:center; gap:8px; }
 
-    <!-- FAVICON -->
-    <link rel="icon" href="images/splash.png">
+  /* steps */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .step{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:26px;
+    position:relative; overflow:hidden;
+  }
+  .step .num{
+    font-family:'Orbitron',sans-serif; font-size:34px; font-weight:900;
+    color:transparent; -webkit-text-stroke:1px var(--accent2); opacity:.5; margin-bottom:10px; display:block;
+  }
+  .step h3{ font-size:17px; color:#fff; margin-bottom:8px; }
+  .step p{ color:var(--text-dim); font-size:14.5px; margin:0; }
 
-    <!-- OPEN GRAPH (Discord, WhatsApp, Facebook, etc) -->
-    <meta property="og:title" content="Victory Crosshair — V9 Extreme">
-    <meta property="og:description" content="Professional gaming crosshair software. RGB, animated, esports-ready.">
-    <meta property="og:image" content="https://victorycrossair.com/images/preview.png">
-    <meta property="og:url" content="https://victorycrossair.com">
-    <meta property="og:type" content="website">
+  /* services */
+  .services-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
 
-    <!-- TWITTER / X -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Victory Crosshair — V9 Extreme">
-    <meta name="twitter:description" content="Professional gaming crosshair software. RGB, animated, esports-ready.">
-    <meta name="twitter:image" content="https://victorycrossair.com/images/preview.png">
+  /* formules */
+  .formules-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; align-items:stretch; }
+  .formule-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:28px 24px; display:flex; flex-direction:column; position:relative; overflow:hidden;
+  }
+  .formule-card::before{
+    content:""; position:absolute; left:0; top:0; right:0; height:3px;
+  }
+  .formule-card.f1::before{ background:var(--accent2); box-shadow:0 0 10px rgba(0,240,255,.7); }
+  .formule-card.f2::before{ background:var(--accent3); box-shadow:0 0 10px rgba(176,38,255,.7); }
+  .formule-card.f3::before{ background:var(--accent); box-shadow:0 0 10px rgba(255,46,154,.7); }
+  .formule-card .ficon{ font-size:26px; margin-bottom:14px; }
+  .formule-card h3{ font-size:18px; color:#fff; margin-bottom:6px; }
+  .formule-card .ftag{ font-size:12.5px; color:var(--text-dim); margin-bottom:18px; }
+  .formule-card .fprice{
+    font-family:'Orbitron',sans-serif; font-size:22px; color:var(--accent2); margin-bottom:6px;
+  }
+  .formule-card.f2 .fprice{ color:var(--accent3); font-size:16px; }
+  .formule-card.f3 .fprice{ color:var(--accent); }
+  .formule-card .fprice small{ display:block; font-family:'Rajdhani',sans-serif; font-size:12px; color:var(--text-dim); font-weight:500; margin-top:2px; }
+  .formule-card ul{ list-style:none; padding:0; margin:0 0 22px; display:flex; flex-direction:column; gap:9px; flex:1; }
+  .formule-card li{ font-size:14px; color:var(--text-dim); display:flex; gap:8px; align-items:flex-start; }
+  .formule-card li .ico{ color:var(--accent2); flex-shrink:0; }
+  .formule-card.f2 li .ico{ color:var(--accent3); }
+  .formule-card.f3 li .ico{ color:var(--accent); }
+  .formule-card button{ width:100%; justify-content:center; }
+  .service-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px 20px;
+  }
+  .service-card .icon{ font-size:26px; margin-bottom:12px; }
+  .service-card h3{ font-size:16px; color:#fff; margin-bottom:8px; }
+  .service-card p{ color:var(--text-dim); font-size:14px; margin:0; }
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+  /* realisations */
+  .pcs-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .pc-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+  }
+  .pc-card .thumb-wrap{ aspect-ratio:4/3; overflow:hidden; background:#0B0716; }
+  .pc-card img{ width:100%; height:100%; object-fit:cover; }
+  .pc-card .info{ padding:18px; }
+  .pc-card h3{ font-size:16px; color:#fff; margin-bottom:6px; }
+  .pc-card .specs{ color:var(--text-dim); font-size:13px; margin-bottom:10px; }
+  .pc-card .price{ color:var(--accent2); font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; }
 
-    <!-- Google AdSense -->
-    <script async 
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5105323713770789"
-        crossorigin="anonymous"></script>
+  /* avis */
+  .avis-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .avis-card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
+  .stars{ color:var(--accent); letter-spacing:2px; margin-bottom:12px; font-size:15px; }
+  .avis-card p{ color:var(--text); font-size:14.5px; margin:0 0 14px; }
+  .avis-card .author{ color:var(--text-dim); font-size:13px; font-weight:600; }
 
+  /* faq */
+  .faq-item{ border-bottom:1px solid var(--border); }
+  .faq-q{
+    width:100%; text-align:left; background:none; border:none; padding:20px 0; color:#fff;
+    font-size:16px; font-weight:600; display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+  }
+  .faq-q:hover{ color:var(--accent2); box-shadow:none; border:none; }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease; color:var(--text-dim); font-size:14.5px; }
+  .faq-a p{ padding:0 0 20px; margin:0; }
+  .faq-item.open .faq-a{ max-height:220px; }
+  .faq-item.open .faq-q .chevron{ transform:rotate(45deg); }
+  .chevron{ transition:.2s; color:var(--accent2); font-size:20px; }
 
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XCH8BCJE01"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  /* devis form */
+  .devis-wrap{
+    display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:start;
+  }
+  .devis-side h3{ color:#fff; font-size:20px; margin-bottom:12px; }
+  .devis-side p{ color:var(--text-dim); font-size:14.5px; margin-bottom:20px; }
+  .devis-side ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px; }
+  .devis-side li{ display:flex; gap:10px; align-items:flex-start; color:var(--text-dim); font-size:14px; }
+  .devis-side li .ico{ color:var(--accent2); }
 
-  gtag('config', 'G-XCH8BCJE01');
-</script>
-    
+  form{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:28px; }
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim); margin-bottom:6px; }
+  .field input, .field select, .field textarea{
+    width:100%; background:#0B0716; border:1px solid var(--border); border-radius:8px; padding:12px;
+    color:var(--text); font-family:'Rajdhani',sans-serif; font-size:15px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--accent2); box-shadow:0 0 8px rgba(0,240,255,.35);
+  }
+  .field textarea{ min-height:90px; resize:vertical; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-msg{ font-size:13.5px; margin-top:12px; display:none; padding:10px 12px; border-radius:8px; }
+  .form-msg.ok{ display:block; background:rgba(0,240,255,.1); color:var(--accent2); border:1px solid var(--accent2); }
+  .form-msg.err{ display:block; background:rgba(255,59,92,.1); color:var(--danger); border:1px solid var(--danger); }
+  .form-msg.pending{ display:block; background:rgba(255,255,255,.05); color:var(--text-dim); border:1px solid var(--border); }
+
+  /* commande */
+  .commande-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .contact-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:30px;
+    text-align:center;
+  }
+  .contact-card .icon{ font-size:32px; margin-bottom:14px; }
+  .contact-card h3{ font-size:19px; color:#fff; margin-bottom:6px; }
+  .contact-card .handle{ font-family:'IBM Plex Mono',monospace; color:var(--accent2); font-size:15px; margin-bottom:18px; }
+  .commande-note{ text-align:center; color:var(--text-dim); font-size:13.5px; margin-top:24px; }
+
+  footer{
+    border-top:1px solid var(--border); padding:44px 24px 28px; text-align:center;
+    color:var(--text-dim); font-size:13px;
+  }
+  footer .foot-contact{ display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; color:var(--text); font-size:14px; }
+  footer .foot-links{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:6px; }
+  footer .foot-links button{ background:none; border:none; padding:4px 0; color:var(--text-dim); font-size:12.5px; text-decoration:underline; box-shadow:none; }
+  footer .foot-links button:hover{ color:var(--accent2); box-shadow:none; }
+
+  /* simulateur */
+  .simu-box{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:32px;
+    display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:center;
+  }
+  .simu-controls label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim); margin-bottom:8px; }
+  .simu-controls select{
+    width:100%; background:#0B0716; border:1px solid var(--border); border-radius:8px; padding:11px;
+    color:var(--text); font-family:'Rajdhani',sans-serif; font-size:15px; margin-bottom:22px;
+  }
+  #simu-budget{ width:100%; accent-color:var(--accent2); margin-bottom:10px; }
+  .simu-budget-value{ font-family:'Orbitron',sans-serif; font-size:26px; color:var(--accent2); text-shadow:0 0 10px rgba(0,240,255,.6); margin-bottom:22px; }
+  .simu-result{
+    background:#0B0716; border:1px solid var(--border); border-radius:10px; padding:22px;
+  }
+  .simu-result .rtag{ font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--accent2); margin-bottom:8px; display:block; }
+  .simu-result p{ color:var(--text); font-size:15px; margin:0 0 16px; line-height:1.5; }
+  .simu-note{ color:var(--text-dim); font-size:12px; margin-top:14px; }
+
+  /* paiement */
+  .paiement-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+  .paiement-card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
+  .paiement-card .icon{ font-size:22px; margin-bottom:10px; }
+  .paiement-card h3{ font-size:15px; color:#fff; margin-bottom:6px; }
+  .paiement-card p{ color:var(--text-dim); font-size:13.5px; margin:0; }
+
+  /* cookie banner */
+  #cookie-banner{
+    position:fixed; bottom:0; left:0; right:0; z-index:100;
+    background:rgba(15,11,26,0.97); backdrop-filter:blur(10px);
+    border-top:1px solid var(--accent2); padding:18px 24px;
+    display:flex; gap:20px; align-items:center; justify-content:center; flex-wrap:wrap;
+    box-shadow:0 -10px 30px rgba(0,0,0,.4);
+  }
+  #cookie-banner p{ color:var(--text-dim); font-size:13px; margin:0; max-width:560px; }
+  #cookie-banner .cookie-actions{ display:flex; gap:10px; flex-shrink:0; }
+
+  /* legal modal */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; z-index:200; background:rgba(4,3,8,0.8);
+    align-items:center; justify-content:center; padding:24px; backdrop-filter:blur(4px);
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+    max-width:640px; width:100%; max-height:80vh; overflow-y:auto; padding:32px;
+    box-shadow:0 0 40px rgba(0,240,255,.15);
+  }
+  .modal-box h2{ font-size:22px; color:#fff; margin-bottom:6px; }
+  .modal-box .modal-disclaimer{
+    font-size:12px; color:var(--accent); background:rgba(255,46,154,.08); border:1px solid rgba(255,46,154,.3);
+    border-radius:8px; padding:10px 12px; margin:14px 0 20px;
+  }
+  .modal-box h3{ font-size:15px; color:var(--accent2); margin:20px 0 8px; }
+  .modal-box p, .modal-box li{ font-size:14px; color:var(--text-dim); line-height:1.6; }
+  .modal-box ul{ padding-left:18px; margin:8px 0; }
+  .modal-close{
+    position:sticky; top:0; float:right; background:var(--panel-2); border:1px solid var(--border);
+    border-radius:8px; padding:6px 12px; margin-bottom:10px;
+  }
+  footer .legal{ opacity:.6; font-size:11.5px; max-width:500px; margin:14px auto 0; }
+
+  @media (max-width: 880px){
+    section{ padding:56px 20px; }
+    .hero{ padding-top:60px; }
+    .hero h1{ font-size:30px; }
+    nav{
+      position:fixed; top:64px; left:0; right:0; background:var(--panel);
+      flex-direction:column; align-items:stretch; padding:14px; border-bottom:1px solid var(--border);
+      display:none; gap:4px;
+    }
+    #nav-toggle:checked ~ nav{ display:flex; }
+    .burger{ display:inline-flex; }
+    .steps, .services-grid, .formules-grid, .pcs-grid, .avis-grid, .devis-wrap, .commande-grid, .field-row, .simu-box, .paiement-grid{
+      grid-template-columns:1fr;
+    }
+  }
+
+  /* ===== fond animé ===== */
+  .bg-blobs{ position:fixed; inset:0; z-index:-2; overflow:hidden; pointer-events:none; }
+  .blob{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.6; }
+  .blob.b1{
+    width:440px; height:440px; top:-120px; left:4%;
+    background:radial-gradient(circle, rgba(0,240,255,.35), transparent 70%);
+    animation: drift1 26s ease-in-out infinite;
+  }
+  .blob.b2{
+    width:500px; height:500px; top:28%; right:-140px;
+    background:radial-gradient(circle, rgba(255,46,154,.30), transparent 70%);
+    animation: drift2 32s ease-in-out infinite;
+  }
+  .blob.b3{
+    width:420px; height:420px; bottom:-150px; left:32%;
+    background:radial-gradient(circle, rgba(176,38,255,.28), transparent 70%);
+    animation: drift3 30s ease-in-out infinite;
+  }
+  @keyframes drift1{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(70px,50px); } }
+  @keyframes drift2{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-60px,70px); } }
+  @keyframes drift3{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(50px,-60px); } }
+
+  .particles{ position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
+  .particle{
+    position:absolute; bottom:-12px; border-radius:50%; opacity:0;
+    animation-name:floatUp; animation-timing-function:linear; animation-iteration-count:infinite;
+    box-shadow:0 0 6px currentColor;
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0); opacity:0; }
+    8%{ opacity:.7; }
+    92%{ opacity:.35; }
+    100%{ transform:translateY(-110vh); opacity:0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .blob, .particle{ animation:none !important; }
+  }
+
+  /* ===== hover : sections & cartes qui prennent vie ===== */
+  .step, .service-card, .formule-card, .pc-card, .avis-card, .contact-card, .paiement-card{
+    transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+  }
+  .step:hover{ transform:translateY(-6px); border-color:var(--accent2); box-shadow:0 14px 32px rgba(0,240,255,.16); }
+  .service-card:hover{ transform:translateY(-6px); border-color:var(--accent2); box-shadow:0 14px 32px rgba(0,240,255,.16); }
+  .paiement-card:hover{ transform:translateY(-6px); border-color:var(--accent3); box-shadow:0 14px 32px rgba(176,38,255,.18); }
+  .avis-card:hover{ transform:translateY(-6px); border-color:var(--accent); box-shadow:0 14px 32px rgba(255,46,154,.16); }
+  .contact-card:hover{ transform:translateY(-6px); border-color:var(--accent2); box-shadow:0 16px 36px rgba(0,240,255,.2); }
+  .formule-card:hover{ transform:translateY(-8px); }
+  .formule-card.f1:hover{ border-color:var(--accent2); box-shadow:0 18px 40px rgba(0,240,255,.22); }
+  .formule-card.f2:hover{ border-color:var(--accent3); box-shadow:0 18px 40px rgba(176,38,255,.22); }
+  .formule-card.f3:hover{ border-color:var(--accent); box-shadow:0 18px 40px rgba(255,46,154,.22); }
+  .pc-card{ transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease; }
+  .pc-card:hover{ transform:translateY(-6px); border-color:var(--accent2); box-shadow:0 16px 36px rgba(0,240,255,.2); }
+  .pc-card .thumb-wrap img{ transition: transform .4s ease; }
+  .pc-card:hover .thumb-wrap img{ transform:scale(1.06); }
+  .faq-item{ transition: background .2s ease; }
+  .faq-item:hover{ background:rgba(255,255,255,.02); }
+</style>
 </head>
 <body>
 
-<nav>
-    <h1>VICTORY CROSSHAIR</h1>
-    <div>
-        <a href="index.html">Home</a>
-        <a href="updates.html">Updates</a>
-        <a href="screenshots.html">Screenshots</a>
-    </div>
-</nav>
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="particles" id="particles" aria-hidden="true"></div>
 
-<section class="hero">
-    <div class="hero-text">
-        <h2>Dominate with precision</h2>
-        <p>
-           Victory Crosshair is a professional gaming software for displaying
-custom, RGB, animated, and esports-ready crosshairs.
-        </p>
 
-        <a class="download-btn" href="https://mega.nz/file/DAMgXbZT#-ZipLkAc11XnACE-gI1gPldfZUg7n0Wlz0BZo6morDM">⬇ Download</a>
-    </div>
+<header>
+  <div class="brand">
+    <div class="mark" id="brand-mark">GA</div>
+    <span>GARAMYR</span>
+  </div>
+  <input type="checkbox" id="nav-toggle" style="display:none;">
+  <label for="nav-toggle" class="burger">☰</label>
+  <nav>
+    <a href="#accueil">Accueil</a>
+    <a href="#formules">Formules</a>
+    <a href="#realisations">Réalisations</a>
+    <a href="#avis">Avis</a>
+    <a href="#faq">FAQ</a>
+    <a href="#paiement">Paiement</a>
+    <a href="#commande">Contact</a>
+    <a href="#devis" class="cta">Faire un devis</a>
+  </nav>
+</header>
 
-    <img src="images/hero.png" alt="Victory Crosshair App">
+<!-- ===== HERO ===== -->
+<section class="hero" id="accueil">
+  <span class="eyebrow">Montage PC sur-mesure</span>
+  <h1>Ta config <span class="glow">taillée pour toi</span>, montée avec précision.</h1>
+  <p>Tu me donnes ton budget et ton usage, je m'occupe du choix des pièces, du montage et de l'installation. Prêt à brancher, prêt à jouer.</p>
+  <div class="hero-ctas">
+    <a href="#devis" class="btn btn-primary">Faire un devis →</a>
+    <a href="#realisations" class="btn">Voir mes montages</a>
+  </div>
+  <div class="trust-strip">
+    <span>🔧 Montage soigné, câblage propre</span>
+    <span>💬 Réponse rapide Discord & WhatsApp</span>
+    <span>🛡️ Garantie sur les pièces</span>
+  </div>
 </section>
 
-<!-- ZONE PUB -->
-<div class="ads">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-5105323713770789"
-         data-ad-slot="f08c47fec0942fa0"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
+<!-- ===== COMMENT ÇA MARCHE ===== -->
+<section id="comment">
+  <span class="eyebrow">Le processus</span>
+  <h2 class="section-title">Comment ça marche</h2>
+  <p class="section-sub">Trois étapes, du premier message à la livraison de ton PC.</p>
+  <div class="steps">
+    <div class="step">
+      <span class="num">01</span>
+      <h3>Tu envoies ta demande</h3>
+      <p>Budget, usage (jeu, création, bureautique...) via le formulaire de devis ou en direct sur Discord/WhatsApp.</p>
+    </div>
+    <div class="step">
+      <span class="num">02</span>
+      <h3>On définit la config</h3>
+      <p>Je te propose une sélection de composants adaptée à ton budget, on ajuste ensemble si besoin.</p>
+    </div>
+    <div class="step">
+      <span class="num">03</span>
+      <h3>Montage & livraison</h3>
+      <p>Je monte, câble, installe Windows et les drivers, teste, puis je te livre ton PC prêt à l'emploi.</p>
+    </div>
+  </div>
+</section>
 
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
+<!-- ===== SERVICES ===== -->
+<section id="services">
+  <span class="eyebrow">Ce que je propose</span>
+  <h2 class="section-title">Mes services</h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="icon">🧩</div>
+      <h3>Montage sur-mesure</h3>
+      <p>Sélection des composants selon ton budget et ton usage réel.</p>
+    </div>
+    <div class="service-card">
+      <div class="icon">💻</div>
+      <h3>Installation complète</h3>
+      <p>Windows, drivers, mises à jour et câblage propre inclus.</p>
+    </div>
+    <div class="service-card">
+      <div class="icon">💬</div>
+      <h3>Conseil personnalisé</h3>
+      <p>Je réponds à tes questions avant, pendant et après le montage.</p>
+    </div>
+    <div class="service-card">
+      <div class="icon">🛡️</div>
+      <h3>Garantie & SAV</h3>
+      <p>Un souci après livraison ? Je m'en occupe avec toi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORMULES ===== -->
+<section id="formules">
+  <span class="eyebrow">Tarifs</span>
+  <h2 class="section-title">Mes formules</h2>
+  <p class="section-sub">Trois façons de faire, selon ce dont tu as besoin.</p>
+  <div class="formules-grid" id="formules-grid"></div>
+</section>
+
+<!-- ===== SIMULATEUR DE BUDGET ===== -->
+<section id="simulateur">
+  <span class="eyebrow">Estimation rapide</span>
+  <h2 class="section-title">Simulateur de budget</h2>
+  <p class="section-sub">Une idée indicative du niveau de config accessible selon ton budget. Le devis final reste personnalisé après échange.</p>
+  <div class="simu-box">
+    <div class="simu-controls">
+      <label for="simu-usage">Usage principal</label>
+      <select id="simu-usage">
+        <option value="gaming">Gaming</option>
+        <option value="bureau">Bureautique / télétravail</option>
+        <option value="creation">Montage vidéo / graphisme</option>
+      </select>
+      <label for="simu-budget">Budget indicatif (TTC)</label>
+      <input type="range" id="simu-budget" min="400" max="3000" step="50" value="1200">
+      <div class="simu-budget-value mono" id="simu-budget-value">1200 €</div>
+      <button type="button" class="btn btn-primary" id="simu-cta">Utiliser ce budget pour mon devis</button>
+    </div>
+    <div class="simu-result">
+      <span class="rtag">Niveau indicatif</span>
+      <p id="simu-text">—</p>
+      <div class="simu-note">Estimation générale, à affiner ensemble selon tes préférences de marque et tes besoins précis.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RÉALISATIONS ===== -->
+<section id="realisations">
+  <span class="eyebrow">Portfolio</span>
+  <h2 class="section-title">PC déjà montés</h2>
+  <p class="section-sub">Quelques configs livrées récemment. Remplace les images et infos par tes propres montages (voir commentaire dans le code).</p>
+  <div class="pcs-grid" id="pcs-grid"></div>
+</section>
+
+<!-- ===== AVIS ===== -->
+<section id="avis">
+  <span class="eyebrow">Témoignages</span>
+  <h2 class="section-title">Avis clients</h2>
+  <p class="section-sub">Ce que disent les clients après réception de leur config.</p>
+  <div class="avis-grid" id="avis-grid"></div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <span class="eyebrow">Questions fréquentes</span>
+  <h2 class="section-title">FAQ</h2>
+  <div id="faq-list"></div>
+</section>
+
+<!-- ===== PAIEMENT ===== -->
+<section id="paiement">
+  <span class="eyebrow">Modalités</span>
+  <h2 class="section-title">Paiement</h2>
+  <p class="section-sub">Ce qu'il faut savoir avant de valider une commande.</p>
+  <div class="paiement-grid">
+    <div class="paiement-card">
+      <div class="icon">💳</div>
+      <h3>Aucun acompte demandé</h3>
+      <p>Pas d'acompte à la commande : le paiement se fait en une fois, à la livraison ou remise en main propre, une fois le PC monté et testé.</p>
+    </div>
+    <div class="paiement-card">
+      <div class="icon">🏦</div>
+      <h3>Moyens acceptés</h3>
+      <p>Virement bancaire, espèces en main propre. [Complète avec PayPal, Lydia ou autre si tu en utilises]</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DEVIS ===== -->
+<section id="devis">
+  <span class="eyebrow">Demande de devis</span>
+  <h2 class="section-title">Faire un devis</h2>
+  <div class="devis-wrap">
+    <div class="devis-side">
+      <h3>Dis-moi ton budget, je m'occupe du reste</h3>
+      <p>Indique ton budget total TTC et ton usage principal : je te réponds avec une proposition de config adaptée, sans engagement.</p>
+      <ul>
+        <li><span class="ico">✓</span> Réponse sous 24-48h</li>
+        <li><span class="ico">✓</span> Devis gratuit et sans engagement</li>
+        <li><span class="ico">✓</span> Config ajustable selon tes retours</li>
+      </ul>
+    </div>
+    <form id="devis-form">
+      <div class="field-row">
+        <div class="field">
+          <label for="d-nom">Nom</label>
+          <input type="text" id="d-nom" required>
+        </div>
+        <div class="field">
+          <label for="d-email">Email</label>
+          <input type="email" id="d-email" required>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="d-tel">Téléphone (optionnel)</label>
+          <input type="tel" id="d-tel">
+        </div>
+        <div class="field">
+          <label for="d-budget">Budget total (TTC en €)</label>
+          <input type="number" id="d-budget" min="0" step="10" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="d-formule">Formule souhaitée</label>
+        <select id="d-formule">
+          <option>Formule 1 — Devis + pièces + montage</option>
+          <option>Formule 2 — Accompagnement à domicile</option>
+          <option>Formule 3 — Montage seul (pièces envoyées)</option>
+          <option>Je ne sais pas encore</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="d-usage">Usage principal</label>
+        <select id="d-usage">
+          <option>Gaming</option>
+          <option>Bureautique / télétravail</option>
+          <option>Montage vidéo / graphisme</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="d-message">Précisions (jeux/logiciels visés, préférences, délai...)</label>
+        <textarea id="d-message"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Envoyer ma demande</button>
+      <div class="form-msg" id="devis-msg"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ===== COMMANDE / CONTACT ===== -->
+<section id="commande">
+  <span class="eyebrow">Contact direct</span>
+  <h2 class="section-title">Passer commande</h2>
+  <p class="section-sub">Pour une demande chiffrée, utilise le formulaire de devis ci-dessus. Pour discuter directement, contacte-moi ici :</p>
+  <div class="commande-grid">
+    <div class="contact-card">
+      <div class="icon">🎮</div>
+      <h3>Discord</h3>
+      <div class="handle">submyr</div>
+      <button class="btn" id="copy-discord">Copier le pseudo</button>
+    </div>
+    <div class="contact-card">
+      <div class="icon">📱</div>
+      <h3>WhatsApp</h3>
+      <div class="handle">06 71 79 68 83</div>
+      <a class="btn btn-copper" id="whatsapp-link" href="#" target="_blank" rel="noopener">Ouvrir la discussion</a>
+    </div>
+  </div>
+  <p class="commande-note">Réponse généralement sous 24h. Merci d'indiquer ton budget et ce que tu recherches dès le premier message.</p>
+</section>
 
 <footer>
-    © 2026 Victory Crosshair — Created by qeerzfn
+  <div class="foot-contact">
+    <span>✉️ anakin733@icloud.com</span>
+    <span>🎮 Discord : submyr</span>
+    <span>📱 WhatsApp : 06 71 79 68 83</span>
+  </div>
+  <div class="foot-links">
+    <button type="button" id="open-mentions">Mentions légales</button>
+    <button type="button" id="open-cgv">CGV</button>
+  </div>
+  <div>© <span id="year"></span> GARAMYR — Montage PC sur-mesure</div>
+  <div class="legal">GARAMYR — [statut à compléter, ex : auto-entrepreneur] — SIRET : à compléter.</div>
 </footer>
 
+<!-- ===== MODALES LÉGALES ===== -->
+<div class="modal-overlay" id="modal-mentions">
+  <div class="modal-box">
+    <button class="modal-close" type="button" data-close-modal>Fermer ✕</button>
+    <h2>Mentions légales</h2>
+    <div class="modal-disclaimer">Modèle générique fourni à titre indicatif — fais-le relire par un professionnel (avocat, CCI, service-public.fr) avant mise en ligne définitive, notamment pour les champs entre crochets.</div>
+
+    <h3>Éditeur du site</h3>
+    <p>GARAMYR<br>
+    [Nom et prénom du responsable]<br>
+    Statut : [auto-entrepreneur / autre — à compléter]<br>
+    SIRET : [à compléter]<br>
+    Adresse : [à compléter]<br>
+    Email : anakin733@icloud.com<br>
+    Téléphone : 06 71 79 68 83</p>
+
+    <h3>Directeur de la publication</h3>
+    <p>[Nom et prénom]</p>
+
+    <h3>Hébergement du site</h3>
+    <p>[Nom de l'hébergeur utilisé pour mettre le site en ligne, ex : Netlify, Vercel, GitHub Pages — à compléter selon ton choix, avec leur adresse]</p>
+
+    <h3>Propriété intellectuelle</h3>
+    <p>L'ensemble des contenus de ce site (textes, images, logo) est la propriété de GARAMYR, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+
+    <h3>Données personnelles</h3>
+    <p>Les informations transmises via le formulaire de devis (nom, email, téléphone, budget, message) sont utilisées uniquement pour répondre à ta demande et ne sont ni revendues ni partagées à des tiers. Conformément au RGPD, tu disposes d'un droit d'accès, de rectification et de suppression de tes données, à exercer par email à anakin733@icloud.com.</p>
+
+    <h3>Cookies</h3>
+    <p>Ce site n'utilise pas de cookies publicitaires ou de traceurs tiers. Il fait appel à des services externes (polices Google Fonts, envoi de formulaire EmailJS) qui peuvent établir une connexion technique avec leurs propres serveurs. Voir la bannière d'information affichée lors de ta première visite.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-cgv">
+  <div class="modal-box">
+    <button class="modal-close" type="button" data-close-modal>Fermer ✕</button>
+    <h2>Conditions Générales de Vente</h2>
+    <div class="modal-disclaimer">Modèle générique fourni à titre indicatif — fais-le relire par un professionnel avant mise en ligne définitive, notamment pour les champs entre crochets.</div>
+
+    <h3>1. Objet</h3>
+    <p>Les présentes CGV encadrent les prestations de montage et vente de PC sur-mesure proposées par GARAMYR à ses clients particuliers.</p>
+
+    <h3>2. Devis</h3>
+    <p>Le devis établi à partir des informations transmises par le client est gratuit et sans engagement. Il est indicatif jusqu'à validation définitive après échange avec le client. [Précise ici une durée de validité, ex : 15 jours]</p>
+
+    <h3>3. Formules et prix</h3>
+    <ul>
+      <li>Formule 1 — Devis + pièces + montage : prix des pièces + 200€ (montage et livraison inclus)</li>
+      <li>Formule 2 — Accompagnement à domicile : prix des pièces + 350€ et frais de déplacement selon zone</li>
+      <li>Formule 3 — Montage seul : 100€, le client fournit ses propres pièces</li>
+    </ul>
+    <p>Tous les prix sont exprimés en euros TTC.</p>
+
+    <h3>4. Commande et paiement</h3>
+    <p>La commande est considérée comme validée après accord exprès du client sur le devis final. Aucun acompte n'est demandé à la commande : le paiement s'effectue en une fois, à la livraison ou remise en main propre. [À adapter si ta politique évolue]</p>
+
+    <h3>5. Livraison</h3>
+    <p>[Précise ici : délai indicatif, zone de livraison, remise en main propre ou envoi, frais de port éventuels.]</p>
+
+    <h3>6. Droit de rétractation</h3>
+    <p>Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne s'applique généralement pas aux biens confectionnés selon les spécifications du consommateur ou nettement personnalisés — ce qui est le cas d'un PC monté sur-mesure. [À faire confirmer par un professionnel selon ta situation exacte.]</p>
+
+    <h3>7. Garanties</h3>
+    <p>Les pièces bénéficient de la garantie légale de conformité et de la garantie constructeur. GARAMYR reste disponible en cas de problème après livraison dans le cadre du SAV proposé.</p>
+
+    <h3>8. Responsabilité</h3>
+    <p>GARAMYR ne saurait être tenu responsable d'un dysfonctionnement lié à une mauvaise utilisation du matériel par le client une fois celui-ci livré et réceptionné en bon état.</p>
+
+    <h3>9. Litiges et médiation</h3>
+    <p>En cas de litige, le client peut recourir à un médiateur de la consommation. Droit applicable : droit français. [Complète avec les coordonnées d'un médiateur si tu en désignes un, obligatoire pour les professionnels en France.]</p>
+  </div>
+</div>
+
+<!-- ===== BANNIÈRE COOKIES ===== -->
+<div id="cookie-banner" style="display:none;">
+  <p>Ce site n'utilise pas de cookies publicitaires. Il s'appuie sur Google Fonts et EmailJS, deux services externes nécessaires à son fonctionnement. Plus d'infos dans les <button type="button" id="cookie-open-mentions" style="display:inline;background:none;border:none;color:var(--accent2);text-decoration:underline;padding:0;box-shadow:none;">mentions légales</button>.</p>
+  <div class="cookie-actions">
+    <button type="button" class="btn btn-primary" id="cookie-accept">J'ai compris</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   CONFIG — à personnaliser
+   ========================================================================= */
+const CONTACT_EMAIL = 'anakin733@icloud.com';
+const WHATSAPP_NUMBER = '33671796883'; // 06 71 79 68 83 en format international sans le 0
+
+/* --- Icône du site (favicon + logo dans le header) ---
+   Colle ici le lien direct d'une image (carrée de préférence, ex: PNG 512x512).
+   Ça peut être un lien Discord CDN (clic droit sur l'image envoyée → "Copier le lien"),
+   un lien Imgur, ou n'importe quelle image hébergée en ligne.
+   Laisse vide ('') pour garder les initiales "GA" à la place. */
+const FAVICON_URL = '';
+
+if(FAVICON_URL){
+  document.getElementById('favicon-link').href = FAVICON_URL;
+  document.getElementById('brand-mark').innerHTML = `<img src="${FAVICON_URL}" alt="Logo GARAMYR">`;
+}
+
+
+/* --- EmailJS (envoi 100% automatique, sans ouvrir l'appli mail du client) ---
+   Le formulaire fonctionne déjà SANS ceci grâce à un envoi par mailto (voir plus bas).
+   Pour un envoi silencieux et automatique :
+   1. Crée un compte gratuit sur https://www.emailjs.com (relie ton adresse icloud comme service d'envoi)
+   2. Crée un template d'email avec les variables {{from_name}}, {{from_email}}, {{phone}}, {{budget}}, {{usage}}, {{message}}
+   3. Remplace les 3 valeurs ci-dessous par celles de ton compte EmailJS */
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+const EMAILJS_READY = ![EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID].some(v => v.startsWith('YOUR_'));
+if(EMAILJS_READY && window.emailjs){ emailjs.init(EMAILJS_PUBLIC_KEY); }
+
+/* =========================================================================
+   CONTENU — remplace par tes vrais montages / avis
+   ========================================================================= */
+const FORMULES = [
+  {
+    css: 'f1',
+    icon: '🛠️  #1 BEST SELLER',
+    name: 'Devis + pièces + montage',
+    tag: 'La formule complète, livrée chez toi',
+    price: 'Prix des pièces',
+    priceNote: '+ 200€ (montage & livraison inclus)',
+    features: [
+      'Devis personnalisé selon ton budget',
+      'Achat des pièces choisies ensemble',
+      'Montage soigné, câblage propre',
+      'Installation Windows + drivers',
+      'Livraison incluse'
+    ]
+  },
+  {
+    css: 'f2',
+    icon: '🏠',
+    name: 'Accompagnement à domicile',
+    tag: 'Je viens chez toi, on monte ensemble',
+    price: 'Prix des pièces',
+    priceNote: '+ 350€ & frais de déplacement (sur devis selon zone)', // TODO: indique un tarif si tu en as un fixe
+    features: [
+      'Devis personnalisé selon ton budget',
+      'Achat des pièces choisies ensemble',
+      'Rendez-vous chez toi',
+      "Mini-cours : tu montes ton PC avec mon accompagnement",
+      'Tu repars avec les bases pour l\'entretenir'
+    ]
+  },
+  {
+    css: 'f3',
+    icon: '🔧',
+    name: 'Montage seul',
+    tag: 'Tu as déjà les pièces, je monte',
+    price: '100€',
+    priceNote: 'Sans devis ni pièces fournies — tu envoies tes pièces',
+    features: [
+      'Aucun devis nécessaire',
+      'Tu envoies tes propres pièces',
+      'Montage uniquement',
+      'Câblage propre et vérifié'
+    ]
+  }
+];
+
+const PCS = [
+  {
+    name: 'Setup Gaming RTX 4070',
+    specs: 'Ryzen 7 7700X · RTX 4070 · 32 Go RAM · 1 To NVMe',
+    price: 'Budget ~1600€',
+    // Remplace par ton propre lien d'image Discord CDN (clic droit sur l'image envoyée sur Discord → "Copier le lien")
+    image: 'https://media.discordapp.net/attachments/1461867264700584019/1527766898131992647/IMG_2460.png?ex=6a5bdb4d&is=6a5a89cd&hm=98fbd308d06bb35de08ab9c258a8d573964a7f0e4d3f97703f758848a37622c9&=&format=webp&quality=lossless'
+  },
+  {
+    name: 'Station Création Ryzen 9',
+    specs: 'Ryzen 9 7900X · RTX 4080 · 64 Go RAM · 2 To NVMe',
+    price: 'Budget ~2800€',
+    image: 'https://media.discordapp.net/attachments/1461867264700584019/1527749445616271483/IMG_2456.png?ex=6a5bcb0c&is=6a5a798c&hm=a07914490e5707ddf7f3ab299fc4058df9cbc7474a0d31f3c99f96a58314ec68&=&format=webp&quality=lossless&width=1032&height=924'
+  },
+  {
+    name: 'PC gamer petit budget',
+    specs: 'Ryzen 5 5500 · 32 Go RAM · 500 Go NVMe · Boîtier silencieux',
+    price: 'Budget ~700€',
+    image: 'https://media.discordapp.net/attachments/1461867264700584019/1527765542906368170/IMG_2458.png?ex=6a5bda09&is=6a5a8889&hm=b07b45895c7cf028c8d8109374dd0010e4c8d5fbae2797241f4efab79b5b5b2c&=&format=webp&quality=lossless&width=1032&height=839'
+  }
+];
+
+const AVIS = [
+  { note:5, text:"Super suivi du début à la fin, la config tourne nickel et le câblage est propre.", author:'— Client Gaming' },
+  { note:5, text:"Budget respecté et conseils clairs, je recommande.", author:'— Client Bureautique' },
+  { note:5, text:"Livraison rapide, PC prêt direct à l'emploi.", author:'— Client Montage vidéo' }
+];
+
+const FAQ = [
+  { q:'Combien de temps pour recevoir mon PC ?', a:'Le délai dépend de la disponibilité des pièces et de la config demandée — je te donne une estimation précise après ton devis. [À compléter avec ton délai réel]' },
+  { q:'Comment se passe le paiement ?', a:'Aucun acompte n\'est demandé à la commande : le paiement se fait en une fois, à la livraison ou remise en main propre (voir la section Paiement ci-dessous).' },
+  { q:'Est-ce que je peux demander une config précise ?', a:'Oui, tu peux préciser des pièces spécifiques dans le formulaire de devis ou directement en message, je m\'adapte à tes préférences.' },
+  { q:'Livrez-vous partout en France ?', a:'[À compléter : zone de livraison, remise en main propre, frais de port éventuels...]' }
+];
+
+/* =========================================================================
+   RENDU
+   ========================================================================= */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* =========================================================================
+   FOND ANIMÉ — particules flottantes (purement décoratif)
+   ========================================================================= */
+(function initParticles(){
+  const container = document.getElementById('particles');
+  const colors = ['#00F0FF', '#FF2E9A', '#B026FF'];
+  const count = 24;
+  for(let i = 0; i < count; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 2;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    const color = colors[i % colors.length];
+    p.style.background = color;
+    p.style.color = color;
+    const duration = Math.random() * 14 + 14;
+    const delay = Math.random() * duration;
+    p.style.animationDuration = duration + 's';
+    p.style.animationDelay = '-' + delay + 's';
+    container.appendChild(p);
+  }
+})();
+
+/* =========================================================================
+   SIMULATEUR DE BUDGET — estimation indicative, pas un calcul de prix exact
+   ========================================================================= */
+const SIMU_TIERS = {
+  gaming: [
+    { max: 700,  text: "Config d'entrée pour jouer en 1080p sur la plupart des jeux, réglages ajustés." },
+    { max: 1100, text: "1080p fluide sur la majorité des jeux récents, bonnes performances polyvalentes." },
+    { max: 1700, text: "1440p confortable, config solide pour du gaming exigeant." },
+    { max: 2500, text: "1440p/4K haut de gamme, marge pour les jeux les plus gourmands." },
+    { max: Infinity, text: "4K très haut de gamme, ce qui se fait de mieux actuellement." }
+  ],
+  bureau: [
+    { max: 500,  text: "Bureautique basique : navigation, documents, visio, sans carte graphique dédiée." },
+    { max: 800,  text: "Bureautique confort : multitâche fluide, démarrage rapide, bon SSD." },
+    { max: Infinity, text: "Bureautique haut de gamme, avec de la marge pour évoluer plus tard." }
+  ],
+  creation: [
+    { max: 1300, text: "Montage vidéo/graphisme léger à modéré, pour débuter sereinement." },
+    { max: 2000, text: "Montage confortable, export plus rapide, bonne quantité de RAM." },
+    { max: Infinity, text: "Montage/3D exigeant, config taillée pour les gros projets." }
+  ]
+};
+const USAGE_LABELS = { gaming:'Gaming', bureau:'Bureautique / télétravail', creation:'Montage vidéo / graphisme' };
+
+function updateSimu(){
+  const usage = document.getElementById('simu-usage').value;
+  const budget = parseInt(document.getElementById('simu-budget').value, 10);
+  document.getElementById('simu-budget-value').textContent = budget + ' €';
+  const tier = SIMU_TIERS[usage].find(t => budget <= t.max);
+  document.getElementById('simu-text').textContent = tier.text;
+}
+document.getElementById('simu-usage').addEventListener('change', updateSimu);
+document.getElementById('simu-budget').addEventListener('input', updateSimu);
+updateSimu();
+
+document.getElementById('simu-cta').addEventListener('click', () => {
+  const usage = document.getElementById('simu-usage').value;
+  const budget = document.getElementById('simu-budget').value;
+  document.getElementById('d-budget').value = budget;
+  const usageSelect = document.getElementById('d-usage');
+  const match = [...usageSelect.options].find(o => o.text === USAGE_LABELS[usage]);
+  if(match) usageSelect.value = match.value;
+  document.getElementById('devis').scrollIntoView({ behavior:'smooth' });
+});
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const formulesGrid = document.getElementById('formules-grid');
+FORMULES.forEach(f => {
+  const card = document.createElement('div');
+  card.className = 'formule-card ' + f.css;
+  card.innerHTML = `
+    <div class="ficon">${f.icon}</div>
+    <h3>${escapeHtml(f.name)}</h3>
+    <div class="ftag">${escapeHtml(f.tag)}</div>
+    <div class="fprice">${escapeHtml(f.price)}<small>${escapeHtml(f.priceNote)}</small></div>
+    <ul>${f.features.map(feat => `<li><span class="ico">✓</span>${escapeHtml(feat)}</li>`).join('')}</ul>
+    <button type="button" class="btn btn-primary" data-formule="${escapeHtml(f.name)}">Choisir cette formule</button>
+  `;
+  formulesGrid.appendChild(card);
+});
+
+formulesGrid.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-formule]');
+  if(!btn) return;
+  const select = document.getElementById('d-formule');
+  const match = [...select.options].find(o => o.text.includes(btn.dataset.formule));
+  if(match) select.value = match.value;
+  document.getElementById('devis').scrollIntoView({ behavior:'smooth' });
+});
+
+const pcsGrid = document.getElementById('pcs-grid');
+PCS.forEach(pc => {
+  const card = document.createElement('div');
+  card.className = 'pc-card';
+  card.innerHTML = `
+    <div class="thumb-wrap"><img src="${pc.image}" alt="${escapeHtml(pc.name)}" loading="lazy"></div>
+    <div class="info">
+      <h3>${escapeHtml(pc.name)}</h3>
+      <div class="specs">${escapeHtml(pc.specs)}</div>
+      <div class="price">${escapeHtml(pc.price)}</div>
+    </div>
+  `;
+  pcsGrid.appendChild(card);
+});
+
+const avisGrid = document.getElementById('avis-grid');
+AVIS.forEach(a => {
+  const card = document.createElement('div');
+  card.className = 'avis-card';
+  card.innerHTML = `
+    <div class="stars">${'★'.repeat(a.note)}${'☆'.repeat(5-a.note)}</div>
+    <p>${escapeHtml(a.text)}</p>
+    <div class="author">${escapeHtml(a.author)}</div>
+  `;
+  avisGrid.appendChild(card);
+});
+
+const faqList = document.getElementById('faq-list');
+FAQ.forEach(item => {
+  const el = document.createElement('div');
+  el.className = 'faq-item';
+  el.innerHTML = `
+    <button class="faq-q" type="button">${escapeHtml(item.q)} <span class="chevron">+</span></button>
+    <div class="faq-a"><p>${escapeHtml(item.a)}</p></div>
+  `;
+  el.querySelector('.faq-q').addEventListener('click', () => {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(o => o.classList.remove('open'));
+    if(!isOpen) el.classList.add('open');
+  });
+  faqList.appendChild(el);
+});
+
+/* =========================================================================
+   CONTACT DIRECT — Discord / WhatsApp
+   ========================================================================= */
+document.getElementById('whatsapp-link').href =
+  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Bonjour, je souhaite passer commande pour un PC sur GARAMYR.')}`;
+
+document.getElementById('copy-discord').addEventListener('click', async (e) => {
+  try{
+    await navigator.clipboard.writeText('submyr');
+    const btn = e.target;
+    const original = btn.textContent;
+    btn.textContent = 'Copié ✓';
+    setTimeout(() => btn.textContent = original, 1800);
+  } catch(err){
+    alert('Pseudo Discord : submyr');
+  }
+});
+
+/* =========================================================================
+   FORMULAIRE DE DEVIS — envoi EmailJS si configuré, sinon repli sur mailto
+   ========================================================================= */
+document.getElementById('devis-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('devis-msg');
+  const data = {
+    from_name: document.getElementById('d-nom').value,
+    from_email: document.getElementById('d-email').value,
+    phone: document.getElementById('d-tel').value || 'non renseigné',
+    budget: document.getElementById('d-budget').value + ' € TTC',
+    formule: document.getElementById('d-formule').value,
+    usage: document.getElementById('d-usage').value,
+    message: document.getElementById('d-message').value || 'aucune précision'
+  };
+
+  if(EMAILJS_READY && window.emailjs){
+    msg.className = 'form-msg pending';
+    msg.textContent = 'Envoi en cours...';
+    try{
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, data);
+      msg.className = 'form-msg ok';
+      msg.textContent = 'Demande envoyée ! Je te réponds sous 24-48h.';
+      e.target.reset();
+    } catch(err){
+      msg.className = 'form-msg err';
+      msg.textContent = "L'envoi automatique a échoué, merci de réessayer ou de me contacter directement sur Discord/WhatsApp.";
+    }
+  } else {
+    // Repli sans configuration : ouvre l'appli mail du visiteur, pré-remplie vers ton email.
+    const subject = `Demande de devis — ${data.from_name}`;
+    const body =
+`Nom : ${data.from_name}
+Email : ${data.from_email}
+Téléphone : ${data.phone}
+Budget (TTC) : ${data.budget}
+Formule souhaitée : ${data.formule}
+Usage : ${data.usage}
+Précisions : ${data.message}`;
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    msg.className = 'form-msg ok';
+    msg.textContent = 'Ton appli mail va s\'ouvrir avec la demande pré-remplie — il ne reste plus qu\'à l\'envoyer.';
+  }
+});
+
+/* =========================================================================
+   MODALES LÉGALES
+   ========================================================================= */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModals(){ document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); }
+
+document.getElementById('open-mentions').addEventListener('click', () => openModal('modal-mentions'));
+document.getElementById('open-cgv').addEventListener('click', () => openModal('modal-cgv'));
+document.getElementById('cookie-open-mentions').addEventListener('click', () => openModal('modal-mentions'));
+document.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', closeModals));
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModals(); });
+});
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModals(); });
+
+/* =========================================================================
+   BANNIÈRE COOKIES — pas de suivi publicitaire, juste une info + mémorisation du choix
+   ========================================================================= */
+(function initCookieBanner(){
+  let alreadyAccepted = false;
+  try{ alreadyAccepted = localStorage.getItem('garamyr_cookie_ack') === '1'; }
+  catch(e){ /* stockage indisponible : on affiche la bannière à chaque visite, sans bloquer */ }
+
+  const banner = document.getElementById('cookie-banner');
+  if(!alreadyAccepted){ banner.style.display = 'flex'; }
+
+  document.getElementById('cookie-accept').addEventListener('click', () => {
+    banner.style.display = 'none';
+    try{ localStorage.setItem('garamyr_cookie_ack', '1'); } catch(e){ /* pas grave si indisponible */ }
+  });
+})();
+</script>
 </body>
 </html>
-
-
-
-
